@@ -9,7 +9,7 @@
 ### 1. Clone dự án về máy:
 
 ```bash
-git clone https://github.com/trungkiengrxer/react-project.git
+git clone https://github.com/ltminh25/drop-drap-tree-app/tree/main/my-tree-app
 
 ```
 ### 2. Cài đặt các gói phụ trợ ngay trong thư mục gốc bằng Command Prompt:
