@@ -33,7 +33,7 @@ export default function App() {
       { id: newId, rootId: `${newId}-root`, data: emptyRoot },
     ]);
   };
-  
+
   const deleteTable = (id) => {
     const table = tables.find(t => t.id === id);
     if (!table) return;
@@ -78,7 +78,7 @@ export default function App() {
                 position: "relative",
               }}
             >
-              {}
+              { }
               <button
                 onClick={() => deleteTable(table.id)}
                 style={{
