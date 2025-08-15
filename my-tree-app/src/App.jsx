@@ -33,6 +33,19 @@ export default function App() {
       { id: newId, rootId: `${newId}-root`, data: emptyRoot },
     ]);
   };
+  
+  const deleteTable = (id) => {
+    const table = tables.find(t => t.id === id);
+    if (!table) return;
+
+    const rootItem = table.data[table.rootId];
+    if (rootItem.children.length > 0) {
+      alert("Không thể xóa bảng nếu còn item");
+      return;
+    }
+
+    setTables(tables.filter(t => t.id !== id));
+  };
 
   if (!dbData) return <div>Loading...</div>;
 
@@ -62,8 +75,39 @@ export default function App() {
                 padding: "10px",
                 backgroundColor: "white",
                 width: "250px",
+                position: "relative",
               }}
             >
+              {}
+              <button
+                onClick={() => deleteTable(table.id)}
+                style={{
+                  position: "absolute",
+                  top: "5px",
+                  right: "5px",
+                  display: "flex",             // căn giữa bằng flex
+                  alignItems: "center",
+                  justifyContent: "center",
+                  width: "18px",
+                  height: "18px",
+                  background: "transparent",
+                  border: "none",
+                  borderRadius: "50%",
+                  cursor: "pointer",
+                  fontSize: "12px",            // nhỏ hơn một chút cho giống tab
+                  color: "#555",
+                  padding: 0,                  // bỏ padding mặc định
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = "#e0e0e0";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = "transparent";
+                }}
+              >
+                ×
+              </button>
+
               <Tree
                 treeId={table.id}
                 rootItem={table.rootId}
