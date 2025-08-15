@@ -22,7 +22,8 @@ await Item.insertMany([
   { index: "Watermelon", isFolder: false, children: [], data: "Dưa hấu" },
   { index: "Drinks", isFolder: true, children: ["Cola", "Pepsi"], data: "Drinks" },
   { index: "Cola", isFolder: false, children: [], data: "Cola" },
-  { index: "Pepsi", isFolder: false, children: [], data: "Pepsi" }
+  { index: "Pepsi", isFolder: true, children: ["Pepsi1"], data: "Pepsi" },
+  { index: "Pepsi1", isFolder: false, children: [], data: "Pepsi1" }
 ]);
 
 console.log("Data inserted!");
