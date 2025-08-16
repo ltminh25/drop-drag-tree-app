@@ -5,10 +5,16 @@ import {
   Tree
 } from "react-complex-tree";
 import "react-complex-tree/lib/style-modern.css";
+import { Upload, message } from "antd";
+import { UploadOutlined } from "@ant-design/icons";
+import axios from "axios";
+
 
 export default function App() {
   const [dbData, setDbData] = useState(null);
   const [tables, setTables] = useState([]);
+  const { Dragger } = Upload;
+
   useEffect(() => {
     fetch("http://localhost:4000/api/tree")
       .then((res) => res.json())
@@ -47,10 +53,41 @@ export default function App() {
     setTables(tables.filter(t => t.id !== id));
   };
 
+  const props = {
+    name: "file",
+    multiple: false,
+    action: "http://localhost:4000/upload", // endpoint backend
+    customRequest: async ({ file, onSuccess, onError }) => {
+      try {
+        const formData = new FormData();
+        formData.append("file", file);
+
+        await axios.post("http://localhost:4000/upload", formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+
+        message.success(`${file.name} đã upload thành công`);
+        onSuccess("ok");
+      } catch (err) {
+        console.error(err);
+        message.error(`${file.name} upload thất bại`);
+        onError(err);
+      }
+    },
+  };
+
   if (!dbData) return <div>Loading...</div>;
 
   return (
     <div>
+      <div style={{position:"fixed", top: 0, left:0 , width: "400px", margin: "20px auto" }}>
+        <Dragger {...props}>
+        <p className="ant-upload-drag-icon">
+          <UploadOutlined />
+        </p>
+        <p className="ant-upload-text">Kéo thả file Excel vào đây</p>
+      </Dragger> 
+      </div>
       <button onClick={addTable}>Thêm bảng</button>
       <UncontrolledTreeEnvironment
         canDragAndDrop
