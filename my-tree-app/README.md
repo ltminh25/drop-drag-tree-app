@@ -18,5 +18,5 @@ npm install
 ```
 ### 3. Nhập lệnh sau để chạy đồng thời cả frontend và server ngay tại thư mục gốc:
 ```bash
-npm start
+npm run dev
 ```
