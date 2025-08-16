@@ -160,57 +160,79 @@ export default function App() {
         }
         viewState={viewState}
       >
-        <div style={{ display: "flex", position:"absolute", top:"150px", gap: "20px", marginTop: "20px" }}>
-          {tables.map((table) => (
-            <div
-              key={table.id}
+        <div style={{ display: "flex", position:"absolute", top:"150px", gap: "20px", marginTop: "40px" }}>
+          {tables.map((table, tableIndex) => (
+          <div
+            key={table.id}
+            style={{
+              border: "1px solid #ccc",
+              borderRadius: "8px",
+              padding: "5px 5px 5px 5px",
+              backgroundColor: "white",
+              width: "250px",
+              position: "relative",
+            }}
+          >
+            {/* Input đổi tên table */}
+            <input
+              type="text"
+              value={table.name || `Table ${tableIndex + 1}`} // nếu chưa có name thì dùng Table 1,2,...
+              onChange={(e) => {
+                const newTables = [...tables];
+                newTables[tableIndex].name = e.target.value; // lưu vào state
+                setTables(newTables);
+              }}
               style={{
+                width: "200px",
+                marginBottom: "5px",
+                padding: "4px 6px",
+                borderRadius: "4px",
                 border: "1px solid #ccc",
-                borderRadius: "8px",
-                padding: "5px 22px 5px 5px",
-                backgroundColor: "white",
-                width: "250px",
-                position: "relative",
+                fontWeight: "bold"
+              }}
+            />
+
+            {/* Nút xóa table */}
+            <button
+              onClick={() => deleteTable(table.id)}
+              style={{
+                position: "absolute",
+                top: "5px",
+                right: "5px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                width: "18px",
+                height: "18px",
+                background: "transparent",
+                border: "none",
+                borderRadius: "50%",
+                cursor: "pointer",
+                fontSize: "12px",
+                color: "#555",
+                padding: 0,
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = "#e0e0e0";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = "transparent";
               }}
             >
-              <button
-                onClick={() => deleteTable(table.id)}
-                style={{
-                  position: "absolute",
-                  top: "5px",
-                  right: "5px",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  width: "18px",
-                  height: "18px",
-                  background: "transparent",
-                  border: "none",
-                  borderRadius: "50%",
-                  cursor: "pointer",
-                  fontSize: "12px",
-                  color: "#555",
-                  padding: 0,
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = "#e0e0e0";
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = "transparent";
-                }}
-              >
-                ×
-              </button>
+              ×
+            </button>
 
-              <div style={{ maxHeight: "300px", overflowY: "auto" }}>
-                <Tree
-                  treeId={table.id}
-                  rootItem={table.rootId}
-                  treeLabel={`Tree ${table.id}`}
-                />
-              </div>
+            {/* Container Tree với scroll */}
+            <div style={{ maxHeight: "500px", overflowY: "auto" }}>
+              <Tree
+                treeId={table.id}
+                rootItem={table.rootId}
+                treeLabel={table.name || `Tree ${tableIndex + 1}`}
+              />
             </div>
-          ))}
+          </div>
+        ))}
+
         </div>
       </UncontrolledTreeEnvironment>
     </div>
