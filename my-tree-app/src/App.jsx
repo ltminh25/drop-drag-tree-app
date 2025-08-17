@@ -8,6 +8,7 @@ import "react-complex-tree/lib/style-modern.css";
 import { Upload, message } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import axios from "axios";
+import "./App.css"; // Import your CSS styles
 
 export default function App() {
   const [dbData, setDbData] = useState(null);
@@ -138,7 +139,7 @@ export default function App() {
       </div>
       
       <div style={{ position: "absolute", top: "100px", left: 0, right: 0, textAlign: "center", marginBottom: "20px" }}>
-          <button onClick={addTable}>Thêm bảng</button>
+          <button onClick={addTable} className="addTablebutton">Thêm bảng</button>
       </div>
       
 
@@ -223,7 +224,7 @@ export default function App() {
             </button>
 
             {/* Container Tree với scroll */}
-            <div style={{ maxHeight: "500px", overflowY: "auto" }}>
+            <div className="scroll-container">
               <Tree
                 treeId={table.id}
                 rootItem={table.rootId}
