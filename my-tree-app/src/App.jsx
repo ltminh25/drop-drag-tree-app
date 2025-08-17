@@ -9,6 +9,7 @@ import { Upload, message } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import axios from "axios";
 import "./App.css"; // Import your CSS styles
+import ClearDatabaseButton from "./hooks/ClearDatabaseButton";
 
 export default function App() {
   const [dbData, setDbData] = useState(null);
@@ -136,6 +137,10 @@ export default function App() {
             }}
           />
         </div>
+      </div>
+
+      <div style={{ position: "absolute", top: 0, right: 0, padding: "10px" }}>
+        <ClearDatabaseButton />
       </div>
       
       <div style={{ position: "absolute", top: "100px", left: 0, right: 0, textAlign: "center", marginBottom: "20px" }}>

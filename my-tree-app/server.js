@@ -3,14 +3,20 @@ import mongoose from "mongoose";
 import cors from "cors";
 import multer from "multer";
 import xlsx from "xlsx";
+import adminRoutes from "./src/routes/admin.js";  
 
 const app = express();
+
+// Middleware
 app.use(cors());
+app.use(express.json());
 
-// Multer config
-const upload = multer({ dest: "uploads/" });
+// Kết nối MongoDB
+mongoose.connect("mongodb://localhost:27017/treeDB")
+  .then(() => console.log("✅ MongoDB connected"))
+  .catch(err => console.error("❌ MongoDB connection error:", err));
 
-// Mongo schema
+// Schema & model
 const ItemSchema = new mongoose.Schema({
   index: String,
   isFolder: Boolean,
@@ -19,8 +25,8 @@ const ItemSchema = new mongoose.Schema({
 });
 const Item = mongoose.model("Item", ItemSchema);
 
-await mongoose.connect("mongodb://localhost:27017/treeDB");
-console.log("✅ MongoDB connected");
+// Routes
+app.use("/admin", adminRoutes);
 
 // API lấy tree
 app.get("/api/tree", async (req, res) => {
@@ -36,6 +42,9 @@ app.get("/api/tree", async (req, res) => {
   });
   res.json(dbData);
 });
+
+// Multer config
+const upload = multer({ dest: "uploads/" });
 
 // API upload excel
 app.post("/upload", upload.single("file"), async (req, res) => {
@@ -60,6 +69,7 @@ app.post("/upload", upload.single("file"), async (req, res) => {
   }
 });
 
+// Start server
 app.listen(4000, () => {
   console.log("🚀 Server running on port 4000");
 });
