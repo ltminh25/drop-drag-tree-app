@@ -5,16 +5,30 @@ import multer from "multer";
 import xlsx from "xlsx";
 import adminRoutes from "./src/routes/admin.js";  
 import buildTreeFromExcel from "./src/utils/buildTreeFromExcel.js"; // Assuming you have this utility function
+import dotenv from "dotenv";
+
 const app = express();
 
 // Middleware
 app.use(cors());
 app.use(express.json());
 
+dotenv.config(); // load biến môi trường từ file .env
+
+
+// Lấy URI từ biến môi trường
+const mongoURI = process.env.MONGODB_URI;
+
 // Kết nối MongoDB
-mongoose.connect("mongodb://localhost:27017/treeDB")
-  .then(() => console.log("✅ MongoDB connected"))
-  .catch(err => console.error("❌ MongoDB connection error:", err));
+mongoose.connect(mongoURI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+})
+.then(() => console.log("✅ MongoDB connected"))
+.catch((err) => console.error("❌ MongoDB connection error:", err));
+
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
 // Schema & model
 const ItemSchema = new mongoose.Schema({
@@ -22,6 +36,7 @@ const ItemSchema = new mongoose.Schema({
   isFolder: { type: Boolean, default: false }, // nếu là folder hay leaf
   children: { type: [String], default: [] }, // list index con
   data: { type: String, required: true },   // tên hiển thị
+  isDimmed: { type: Boolean, default: false },
 });
 const Item = mongoose.model("Item", ItemSchema);
 
@@ -39,6 +54,7 @@ app.get("/api/tree", async (req, res) => {
       isFolder: item.isFolder,
       children: item.children,
       data: item.data,
+      isDimmed: item.isDimmed,
     };
   });
   
