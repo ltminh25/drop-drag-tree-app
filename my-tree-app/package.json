@@ -20,6 +20,7 @@
     "react": "^19.1.1",
     "react-complex-tree": "^2.6.0",
     "react-dom": "^19.1.1",
+    "slugify": "^1.6.6",
     "xlsx": "^0.18.5"
   },
   "devDependencies": {

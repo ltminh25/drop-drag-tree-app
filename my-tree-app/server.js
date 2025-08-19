@@ -4,7 +4,7 @@ import cors from "cors";
 import multer from "multer";
 import xlsx from "xlsx";
 import adminRoutes from "./src/routes/admin.js";  
-
+import buildTreeFromExcel from "./src/utils/buildTreeFromExcel.js"; // Assuming you have this utility function
 const app = express();
 
 // Middleware
@@ -18,15 +18,16 @@ mongoose.connect("mongodb://localhost:27017/treeDB")
 
 // Schema & model
 const ItemSchema = new mongoose.Schema({
-  index: String,
-  isFolder: Boolean,
-  children: [String],
-  data: String,
+  index: { type: String, required: true },   // index duy nhất để tree
+  isFolder: { type: Boolean, default: false }, // nếu là folder hay leaf
+  children: { type: [String], default: [] }, // list index con
+  data: { type: String, required: true },   // tên hiển thị
 });
 const Item = mongoose.model("Item", ItemSchema);
 
 // Routes
 app.use("/admin", adminRoutes);
+
 
 // API lấy tree
 app.get("/api/tree", async (req, res) => {
@@ -40,6 +41,7 @@ app.get("/api/tree", async (req, res) => {
       data: item.data,
     };
   });
+  
   res.json(dbData);
 });
 
@@ -51,16 +53,16 @@ app.post("/upload", upload.single("file"), async (req, res) => {
   try {
     const workbook = xlsx.readFile(req.file.path);
     const sheetName = workbook.SheetNames[0];
-    const sheet = xlsx.utils.sheet_to_json(workbook.Sheets[sheetName]);
+    const rows = xlsx.utils.sheet_to_json(workbook.Sheets[sheetName], {
+      header: ["C1", "C2", "C3", "C4"],
+      range: 1,
+    });
 
-    for (const row of sheet) {
-      await Item.create({
-        index: row.index,
-        isFolder: row.isFolder === "TRUE" || row.isFolder === true,
-        children: row.children ? row.children.split(",") : [],
-        data: row.data,
-      });
-    }
+    const items = buildTreeFromExcel(rows);
+
+    // Xóa dữ liệu cũ nếu muốn
+    await Item.deleteMany({});
+    await Item.insertMany(items);
 
     res.json({ success: true, message: "Excel uploaded & inserted to DB" });
   } catch (err) {
@@ -68,6 +70,8 @@ app.post("/upload", upload.single("file"), async (req, res) => {
     res.status(500).json({ success: false, message: "Upload failed" });
   }
 });
+
+
 
 // Start server
 app.listen(4000, () => {
