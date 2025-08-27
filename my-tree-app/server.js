@@ -37,6 +37,7 @@ const ItemSchema = new mongoose.Schema({
   children: { type: [String], default: [] }, // list index con
   data: { type: String, required: true },   // tên hiển thị
   isDimmed: { type: Boolean, default: false },
+  parent: { type: String, default: null },   // index của parent
 });
 const Item = mongoose.model("Item", ItemSchema);
 
@@ -55,6 +56,7 @@ app.get("/api/tree", async (req, res) => {
       children: item.children,
       data: item.data,
       isDimmed: item.isDimmed,
+      parent: item.parent,   // 👉 trả thêm parent
     };
   });
   
